@@ -1,0 +1,4 @@
+qmon_ftp_path = '/var/www/qmon_ftp_3'
+ruby_ftp_manager_path = '/prog/serialport'
+sleeptime_between_measurements = 5
+

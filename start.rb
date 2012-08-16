@@ -1,8 +1,5 @@
 
-# start the measure
-def startmeasure(comport)
-  
-end
+require('parseconfig')
 
 # open RTS 
 def openRTS(comport,sleeptime) 
@@ -40,15 +37,41 @@ def closeDTR(comport,sleeptime)
 end
 
 
+# start the measure
+def startMeasure() 
+  
+  puts "starting measurement..."
+  config = ParseConfig.new('./rubyconfig')
+  qmon_ftp_path =  config['qmon_ftp_path']
+  sleeptime_between_measurements = config['sleeptime_between_measurements']
+  Dir.chdir qmon_ftp_path
+  system('./restart')
+  sleep sleeptime_between_measurements
+  
+end
+
+
 # start point
 
 
-ARGV.each do|comport|
+if (ARGV.length == 0)
+  
+    puts "Error:please give arguments (COM ports)!\nYou can check them with dmesg | grep tty command"
+    
+else
 
-  # close RTS and DTP ports
-  closeDTR(comport,2)
-  openRTS(comport,2)
- 
+  ARGV.each do|comport|
+  
+    # open RTS port
+    openRTS(comport,2)
+    startMeasure();
+    closeRTS(comport,2)
+    
+    # open DTR port
+    openDTR(comport,2)
+    startMeasure();
+    closeDTR(comport,2)
+    
+  end
 end
-
 
